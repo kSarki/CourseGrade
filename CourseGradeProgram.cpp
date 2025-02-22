@@ -9,55 +9,49 @@ using namespace std;
 struct Student {
     string name;
     int id;
-    double* testScores;
+    double testScores[10]; // Assume max 10 test scores
     double average;
     char grade;
 };
 
 // Function prototypes
-Student* getData(ifstream& file, int& studentCnt, int& testsCnt);
+void getData(ifstream& file, Student students[], int& studentCnt, int& testsCnt);
 void calcAverage(Student students[], int studentCnt, int testsCnt);
 char getLetterGrade(double avg);
 void printReport(const Student students[], int studentCnt);
-void freeMemory(Student* students, int studentCnt);
 
 int main() {
-    ifstream file("grades.txt"); // File should contain student data
+    ifstream file("grades.txt");
     if (!file) {
         cerr << "Error opening file!" << endl;
         return 1;
     }
 
+    Student students[100]; // Assume max 100 students
     int studentCnt, testsCnt;
-    Student* students = getData(file, studentCnt, testsCnt);
+
+    getData(file, students, studentCnt, testsCnt);
     file.close();
 
     calcAverage(students, studentCnt, testsCnt);
     printReport(students, studentCnt);
 
-    freeMemory(students, studentCnt);
-
     return 0;
 }
 
 // Function to read student data from file
-Student* getData(ifstream& file, int& studentCnt, int& testsCnt) {
+void getData(ifstream& file, Student students[], int& studentCnt, int& testsCnt) {
     file >> studentCnt >> testsCnt; // Read number of students and tests
-
-    Student* students = new Student[studentCnt];
 
     for (int i = 0; i < studentCnt; i++) {
         file >> students[i].name >> students[i].id;
-        students[i].testScores = new double[testsCnt];
-
         for (int j = 0; j < testsCnt; j++) {
             file >> students[i].testScores[j];
         }
     }
-    return students;
 }
 
-// Function to calculate average score and assign letter grades
+// Function to calculate average scores and assign letter grades
 void calcAverage(Student students[], int studentCnt, int testsCnt) {
     for (int i = 0; i < studentCnt; i++) {
         double total = 0;
@@ -92,10 +86,8 @@ void printReport(const Student students[], int studentCnt) {
     }
 }
 
-// Function to deallocate memory
-void freeMemory(Student* students, int studentCnt) {
-    for (int i = 0; i < studentCnt; i++) {
-        delete[] students[i].testScores; // Free each student's test scores array
-    }
-    delete[] students; // Free main student array
-}
+
+
+
+    
+
